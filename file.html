@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Tic-Tac-Toe Game</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #74EBD5 0%, #9FACE6 100%);
+            font-family: 'Poppins', sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 10px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border: 2px solid #007bff;
+            font-size: 2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .cell:hover {
+            background: #e0f7ff;
+            transform: scale(1.05);
+        }
+
+        .status {
+            margin: 20px 0;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .winner {
+            color: #28a745;
+        }
+
+        .draw {
+            color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tic-Tac-Toe</h1>
+        <div id="board" class="board"></div>
+        <div id="status" class="status"></div>
+        <button id="restart">Restart Game</button>
+    </div>
+
+    <script>
+        const board = document.getElementById('board');
+        const status = document.getElementById('status');
+        const restartBtn = document.getElementById('restart');
+
+        let cells = Array(9).fill(null);
+        let currentPlayer = 'X';
+        let gameActive = true;
+
+        function renderBoard() {
+            board.innerHTML = '';
+            cells.forEach((cell, index) => {
+                const cellElement = document.createElement('div');
+                cellElement.classList.add('cell');
+                cellElement.textContent = cell;
+                cellElement.addEventListener('click', () => makeMove(index));
+                board.appendChild(cellElement);
+            });
+        }
+
+        function makeMove(index) {
+            if (cells[index] || !gameActive) return;
+            cells[index] = currentPlayer;
+            renderBoard();
+            checkWinner();
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        }
+
+        function checkWinner() {
+            const winPatterns = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                [0, 4, 8], [2, 4, 6]
+            ];
+
+            winPatterns.forEach(pattern => {
+                const [a, b, c] = pattern;
+                if (cells[a] && cells[a] === cells[b] && cells[a] === cells[c]) {
+                    status.innerHTML = `<span class="winner">${cells[a]} wins!</span>`;
+                    gameActive = false;
+                }
+            });
+
+            if (!cells.includes(null) && gameActive) {
+                status.innerHTML = `<span class="draw">It's a draw!</span>`;
+                gameActive = false;
+            }
+        }
+
+        restartBtn.addEventListener('click', () => {
+            cells = Array(9).fill(null);
+            currentPlayer = 'X';
+            gameActive = true;
+            status.textContent = '';
+            renderBoard();
+        });
+
+        renderBoard();
+    </script>
+</body>
+</html>
+
+
